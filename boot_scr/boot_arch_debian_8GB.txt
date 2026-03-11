@@ -1,0 +1,25 @@
+# 1. Define Boot Macros
+setenv boot_mmc "echo 'Loading Main zImage...'; load mmc 0:1 0x42000000 zImage; load mmc 0:1 0x43000000 sun7i-a20-olinuxino-lime2.dtb; setenv bootargs console=ttyS0,115200 root=/dev/mmcblk0p2 rootwait; bootz 0x42000000 - 0x43000000"
+
+# New Macro for 6.6.3
+setenv boot_mmc_663 "echo 'Loading Kernel 6.6.3...'; load mmc 0:1 0x42000000 zImage_6.6.3; load mmc 0:1 0x48000000 sun7i-a20-olinuxino-lime2.dtb; setenv bootargs console=ttyS0,115200 root=/dev/mmcblk0p2 rootwait; bootz 0x42000000 - 0x48000000"
+
+setenv boot_net "echo 'Loading Net...'; setenv serverip 192.168.1.60; setenv ipaddr 192.168.1.121; setenv bootargs console=ttyS0,115200 root=/dev/nfs nfsroot=192.168.1.60:/srv/nfs/lime2-rootfs,tcp ip=dhcp; tftp 0x42000000 zImage_allwinner; tftp 0x43000000 sun7i-a20-olinuxino-lime2.dtb; bootz 0x42000000 - 0x43000000"
+
+setenv boot_last "echo 'Loading Main zImage(Arch partition 4)...'; load mmc 0:3 0x42000000 zImage; load mmc 0:3 0x43000000 sun7i-a20-olinuxino-lime2.dtb; setenv bootargs console=ttyS0,115200 root=/dev/mmcblk0p4 rootwait; bootz 0x42000000 - 0x43000000"
+
+# 2. Set Menu Entries
+setenv bootmenu_0 "Default Kernel (zImage)=run boot_mmc"
+setenv bootmenu_1 "Legacy Kernel (6.6.3)=run boot_mmc_663"
+setenv bootmenu_2 "Network Boot (NFS)=run boot_net"
+setenv bootmenu_3 "Arch on partition 4=run boot_last"
+setenv bootmenu_4 "U-Boot Console=reset"
+setenv bootmenu_default 0
+
+# 3. The Force-Stop Hack
+setenv boot_targets "none"
+setenv distro_bootcmd "true"
+
+# 4. Trigger Menu and Exit
+bootmenu
+exit
